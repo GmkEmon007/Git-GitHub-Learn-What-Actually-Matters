@@ -1,0 +1,1922 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Git &amp; GitHub — Interactive Playbook</title>
+<meta name="description" content="Learn Git and GitHub by doing: complete practical notes with a built-in Git simulator, labs, quizzes and flashcards.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐙</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <button class="icon-btn" id="menuBtn" aria-label="Menu">☰</button>
+  <a class="brand" href="#/"><span class="logo">⎇</span><span>Git &amp; GitHub Playbook<small>Learn by doing</small></span></a>
+  <div class="search"><input id="search" type="search" placeholder="Search lessons…  ( / )" autocomplete="off"></div>
+  <div class="top-progress"><div class="bar"><span id="topBar"></span></div><span id="topPct"></span></div>
+  <button class="icon-btn" id="themeBtn" title="Toggle theme">☀️</button>
+</header>
+
+<nav class="sidebar" id="nav"></nav>
+<div class="sidebar-overlay" id="overlay"></div>
+
+<main class="main"><div id="view" class="content"></div></main>
+<div class="toast" id="toast"></div>
+
+<!-- =====================================================
+     LESSONS — written in Markdown.
+     ::lab <id>  ::quiz <part>  ::flow <id>  ::<widget>
+     ===================================================== -->
+
+<!-- ================= PART 1 ================= -->
+<script type="text/markdown" data-lesson="1" data-part="1" data-title="What is Git?">
+**Git is a distributed version control system (VCS).**
+
+It helps us:
+
+* Track changes in files
+* Save versions/checkpoints
+* Compare changes
+* Go back to previous versions
+* Work with branches
+* Collaborate with other developers
+* Merge different people's work
+
+> **Git manages your project's history. GitHub hosts Git repositories online and provides collaboration features.**
+
+# Git vs GitHub
+
+| Git | GitHub |
+| --- | --- |
+| Version control tool | Online Git hosting platform |
+| Works locally | Works online |
+| Tracks project history | Stores/shares repositories |
+| `git commit` | Pull Requests |
+| `git branch` | Code review |
+| `git merge` | Collaboration |
+| Works without internet | Usually requires internet |
+
+> [!TIP]
+> Think of **Git** as the camera that takes snapshots of your project, and **GitHub** as the online photo album where you share them with your team.
+
+# Why "distributed"?
+
+Every developer has a **full copy of the repository** — the complete history — on their own computer. You can commit, branch, view history and merge **offline**. You only need the internet to *share* (push/pull) with a remote like GitHub.
+
+```text
+        GitHub (remote copy)
+         ↑↓            ↑↓
+   Your laptop     Teammate's laptop
+  (full history)    (full history)
+```
+
+::flow model
+</script>
+
+<script type="text/markdown" data-lesson="2" data-part="1" data-title="Git Repository">
+Suppose we create:
+
+```text
+my-project/
+├── index.html
+├── style.css
+└── script.js
+```
+
+Initially, Git knows **nothing** about this folder.
+
+We initialize Git:
+
+```bash
+git init
+```
+
+Now Git creates a hidden `.git/` folder. The `.git` folder contains the information Git needs to track the repository.
+
+```text
+Normal folder
+      ↓
+   git init
+      ↓
+Git repository
+```
+
+> [!IMPORTANT]
+> Git does **not automatically manage every file** after `git init`. Files start as **untracked**. You decide which files Git should start tracking.
+
+::lab init
+
+> [!WARNING]
+> Never delete the `.git` folder unless you really want to throw away the entire history of the project.
+
+::quiz 1
+</script>
+
+<!-- ================= PART 2 ================= -->
+<script type="text/markdown" data-lesson="3" data-part="2" data-title="Git's Three Main Areas">
+This is one of the most important concepts in Git.
+
+```text
+Working Directory
+       ↓
+    git add
+       ↓
+Staging Area
+       ↓
+  git commit
+       ↓
+Repository
+```
+
+# 1. Working Directory
+
+Where you actually create/edit files — for example `index.html`, `style.css`, `script.js`.
+
+# 2. Staging Area
+
+Files selected for the **next commit**.
+
+```bash
+git add index.html
+```
+
+# 3. Repository
+
+The permanent Git history containing commits.
+
+```bash
+git commit -m "Add homepage"
+```
+
+> **Think: Working → Stage → Commit**
+
+::areas
+
+> [!TIP]
+> Why have a staging area at all? It lets you split your work into **clean, logical commits**. You may have changed 5 files, but only 2 belong to "Fix navbar" — stage just those 2 and commit them.
+</script>
+
+<script type="text/markdown" data-lesson="4" data-part="2" data-title="File States">
+A file can be:
+
+```text
+Untracked
+Tracked
+Modified
+Staged
+Committed
+```
+
+# Untracked
+
+Git sees the file but isn't tracking it.
+
+```text
+?? index.html
+```
+
+# Tracked
+
+Git knows about the file. A tracked file can be:
+
+* Unmodified
+* Modified
+* Staged
+
+# Modified
+
+You changed a tracked file after the previous commit.
+
+```text
+ M index.html
+```
+
+# Staged
+
+The changes are selected for the next commit.
+
+```bash
+git add index.html
+```
+
+# Committed
+
+The changes have been saved into Git history.
+
+```bash
+git commit -m "Update homepage"
+```
+
+```text
+ Untracked ──git add──▶ Staged ──git commit──▶ Committed (unmodified)
+                          ▲                          │
+                          └──git add── Modified ◀──edit
+```
+</script>
+
+<script type="text/markdown" data-lesson="5" data-part="2" data-title="git status">
+Check the current state:
+
+```bash
+git status
+```
+
+Short version:
+
+```bash
+git status -s
+```
+
+Example:
+
+```text
+?? test.txt
+ M index.html
+M  style.css
+```
+
+The two columns matter:
+
+```text
+XY filename
+```
+
+Where:
+
+* `X` = staging area
+* `Y` = working directory
+
+Common examples:
+
+| Code | Meaning |
+| --- | --- |
+| `?? file.txt` | untracked |
+| ` M file.txt` | modified (not staged) |
+| `M  file.txt` | staged |
+| `MM file.txt` | staged + modified again |
+| `A  file.txt` | new file added/staged |
+| `UU file.txt` | merge conflict |
+
+::status
+
+Now produce every code yourself in the simulator:
+
+::lab status
+</script>
+
+<script type="text/markdown" data-lesson="6" data-part="2" data-title="Add Files">
+Stage one file:
+
+```bash
+git add index.html
+```
+
+Stage multiple:
+
+```bash
+git add index.html style.css
+```
+
+Stage everything:
+
+```bash
+git add .
+```
+
+Then check:
+
+```bash
+git status
+```
+
+> [!TIP]
+> `git add .` respects your `.gitignore`, so ignored files (like `.env`) are never staged by accident.
+
+::lab areas
+</script>
+
+<script type="text/markdown" data-lesson="7" data-part="2" data-title="Commit — Creating a Checkpoint">
+A commit is essentially a **snapshot/checkpoint of your project**.
+
+```bash
+git commit -m "Add homepage"
+```
+
+Good commit:
+
+```bash
+git commit -m "Add responsive navbar"
+```
+
+Bad commit:
+
+```bash
+git commit -m "changes"
+```
+
+# Good commit messages
+
+```text
+Add login page
+Fix navbar mobile layout
+Update database schema
+Implement product search
+Remove unused CSS
+```
+
+> [!TIP]
+> A good rule: your message should complete the sentence *"If applied, this commit will … "* → "If applied, this commit will **Add login page**".
+
+::commitmsg
+
+Useful shortcut — stage all **tracked** files and commit in one step:
+
+```bash
+git commit -am "Fix footer links"
+```
+
+> [!WARNING]
+> `-a` does **not** include brand-new (untracked) files. You still need `git add` for those.
+</script>
+
+<script type="text/markdown" data-lesson="8" data-part="2" data-title="Git Log">
+See commit history:
+
+```bash
+git log
+```
+
+Short version:
+
+```bash
+git log --oneline
+```
+
+Graph:
+
+```bash
+git log --oneline --graph
+```
+
+All branches:
+
+```bash
+git log --oneline --graph --all
+```
+
+A useful command:
+
+```bash
+git log --oneline --graph --all --decorate
+```
+
+Example:
+
+```text
+* a31f2c1 Add login page
+* 82bd991 Add navbar
+* 192aa21 Initial commit
+```
+
+Each commit has a unique **commit hash**. You can use the first 7 characters (e.g. `a31f2c1`) to refer to a commit.
+
+::lab log
+
+::quiz 2
+</script>
+
+<!-- ================= PART 3 ================= -->
+<script type="text/markdown" data-lesson="9" data-part="3" data-title="HEAD">
+`HEAD` represents your **current position in Git history**.
+
+```text
+A → B → C
+        ↑
+       HEAD
+```
+
+`HEAD~1` means: **one commit before HEAD**.
+
+```bash
+git reset --hard HEAD~1
+```
+
+`HEAD~2`:
+
+```bash
+git reset --hard HEAD~2
+```
+
+| Reference | Points to |
+| --- | --- |
+| `HEAD` | current commit |
+| `HEAD~1` (or `HEAD^`) | parent |
+| `HEAD~2` | grandparent |
+| `main` | tip of the main branch |
+
+> [!NOTE]
+> Normally HEAD points to a **branch** (e.g. `HEAD → main`), and the branch points to a commit. If you check out a commit directly, you get a **detached HEAD** — fine for looking around, but create a branch before making commits you want to keep.
+
+In the simulator below, the orange **HEAD →** label in the graph is your current position.
+</script>
+
+<script type="text/markdown" data-lesson="10" data-part="3" data-title="Git Reset">
+`git reset` moves the current branch/HEAD and can affect the staging area and working files depending on the mode. There are three major modes.
+
+# Soft
+
+```bash
+git reset --soft HEAD~1
+```
+
+Moves the commit back but **keeps changes staged**.
+
+```text
+Commit
+  ↓
+HEAD moves backward
+  ↓
+Changes remain staged
+```
+
+Useful when you want to redo a commit.
+
+# Mixed
+
+```bash
+git reset HEAD~1
+```
+
+or:
+
+```bash
+git reset --mixed HEAD~1
+```
+
+Moves the commit back and **unstages the changes**, but keeps the files modified. This is the default reset mode.
+
+# Hard
+
+```bash
+git reset --hard HEAD~1
+```
+
+Moves HEAD backward and discards tracked working/staged changes.
+
+> [!DANGER]
+> `git reset --hard` is a **dangerous command**. Do not use it casually — uncommitted work is lost.
+
+::reset
+
+| Mode | HEAD moves | Staging area | Working files |
+| --- | --- | --- | --- |
+| `--soft` | ✅ | kept (staged) | kept |
+| `--mixed` | ✅ | reset (unstaged) | kept |
+| `--hard` | ✅ | reset | **discarded** ⚠️ |
+
+::lab reset
+</script>
+
+<script type="text/markdown" data-lesson="11" data-part="3" data-title="Undoing Changes">
+Discard changes in a file:
+
+```bash
+git restore index.html
+```
+
+Unstage a file:
+
+```bash
+git restore --staged index.html
+```
+
+Modern Git generally prefers `git restore` for these operations.
+
+| Situation | Command |
+| --- | --- |
+| I edited a file and want the last committed/staged version back | `git restore file` |
+| I staged a file by mistake | `git restore --staged file` |
+| I committed too early (not pushed) | `git reset --soft HEAD~1` |
+| I committed and already pushed | `git revert <hash>` (lesson 40) |
+
+::lab restore
+</script>
+
+<script type="text/markdown" data-lesson="12" data-part="3" data-title=".gitignore">
+Some files should **never be committed**.
+
+Example:
+
+```text
+node_modules/
+.env
+__pycache__/
+*.log
+dist/
+.vscode/
+```
+
+Create a file named `.gitignore` in the project root:
+
+```gitignore
+node_modules/
+.env
+__pycache__/
+*.pyc
+dist/
+```
+
+# Why?
+
+You don't want to upload:
+
+* Passwords
+* API keys
+* Environment variables
+* Dependencies
+* Build files
+* Temporary files
+* Large generated files
+
+> [!DANGER]
+> **Never commit secrets.** Once a secret is pushed to GitHub, consider it leaked — rotate the key immediately.
+
+::ignore basic
+
+> [!NOTE]
+> `.gitignore` only affects **untracked** files. If a file is already committed, ignoring it later won't remove it. Stop tracking it with `git rm --cached <file>`, then commit.
+
+::lab ignore
+
+::quiz 3
+</script>
+
+<!-- ================= PART 4 ================= -->
+<script type="text/markdown" data-lesson="13" data-part="4" data-title="Git Branching">
+A branch allows you to work on a feature without directly changing `main`.
+
+```text
+main
+ │
+ ├── commit
+ ├── commit
+ │
+ └── feature/navbar
+       ├── commit
+       └── commit
+```
+
+Create branch:
+
+```bash
+git branch feature/navbar
+```
+
+See branches:
+
+```bash
+git branch
+```
+
+Create and switch:
+
+```bash
+git switch -c feature/navbar
+```
+
+This is the recommended modern syntax.
+
+> [!NOTE]
+> A branch is just a lightweight, movable **pointer to a commit**. Creating one is instant and costs almost nothing — so use them freely!
+
+::lab branch
+</script>
+
+<script type="text/markdown" data-lesson="14" data-part="4" data-title="Switching Branches">
+```bash
+git switch main
+```
+
+Switch to feature branch:
+
+```bash
+git switch feature/navbar
+```
+
+Older command:
+
+```bash
+git checkout feature/navbar
+```
+
+`git checkout` still works, but modern Git separates responsibilities between:
+
+```bash
+git switch
+git restore
+```
+
+which are easier to understand.
+
+| Old | Modern |
+| --- | --- |
+| `git checkout feature` | `git switch feature` |
+| `git checkout -b feature` | `git switch -c feature` |
+| `git checkout -- file` | `git restore file` |
+
+> [!WARNING]
+> If you have uncommitted changes that would be overwritten, Git refuses to switch. Commit them or use `git stash` (lesson 22).
+</script>
+
+<script type="text/markdown" data-lesson="15" data-part="4" data-title="Typical Feature Workflow">
+```bash
+git switch main
+
+git pull
+
+git switch -c feature/navbar
+
+# write code
+
+git status
+
+git add .
+
+git commit -m "Add responsive navbar"
+```
+
+Then push:
+
+```bash
+git push -u origin feature/navbar
+```
+
+::flow workflow
+</script>
+
+<script type="text/markdown" data-lesson="16" data-part="4" data-title="Merge">
+Suppose:
+
+```text
+main
+ │
+ A
+ │
+ B
+ \
+  C
+  D
+feature/navbar
+```
+
+You want to merge `feature/navbar` into `main`.
+
+First:
+
+```bash
+git switch main
+```
+
+Then:
+
+```bash
+git merge feature/navbar
+```
+
+> [!IMPORTANT]
+> **You normally merge the feature branch while standing on the branch that should receive the changes.**
+
+```bash
+git switch main
+git merge feature/navbar
+```
+</script>
+
+<script type="text/markdown" data-lesson="17" data-part="4" data-title="Fast-Forward Merge">
+If `main` has not changed since the feature branch was created:
+
+```text
+A → B → C
+        ↑
+      feature
+main (at B)
+```
+
+Git can simply move `main` forward.
+
+```text
+A → B → C
+        ↑
+      main
+```
+
+This is a **fast-forward merge**. No new commit is created — the `main` label just slides forward.
+
+::lab ff
+
+> [!TIP]
+> Want a merge commit anyway (to record that a feature was merged)? Use `git merge --no-ff feature/navbar`.
+</script>
+
+<script type="text/markdown" data-lesson="18" data-part="4" data-title="Three-Way Merge">
+Suppose both branches changed:
+
+```text
+        C → D
+       /
+A → B
+       \
+        E → F
+```
+
+Now Git needs to combine histories. Git uses three points:
+
+1. Common ancestor (`B`)
+2. Current branch (`F`)
+3. Other branch (`D`)
+
+This is called a **three-way merge**. The result is a new **merge commit** with **two parents**.
+
+```text
+        C → D
+       /     \
+A → B         M   ← merge commit
+       \     /
+        E → F
+```
+
+::lab threeway
+</script>
+
+<script type="text/markdown" data-lesson="19" data-part="4" data-title="Merge Conflict">
+Sometimes Git cannot automatically decide which code should remain.
+
+Example — `main`:
+
+```html
+<h1>Hello</h1>
+```
+
+Feature branch:
+
+```html
+<h1>Welcome</h1>
+```
+
+Git may show:
+
+```text
+<<<<<<< HEAD
+<h1>Hello</h1>
+=======
+<h1>Welcome</h1>
+>>>>>>> feature/navbar
+```
+
+| Marker | Meaning |
+| --- | --- |
+| `<<<<<<< HEAD` | start of **your** version (current branch) |
+| `=======` | separator |
+| `>>>>>>> feature/navbar` | end of the **incoming** version |
+
+You manually choose the correct version (and delete the markers). Then:
+
+```bash
+git add .
+git commit
+```
+
+Or abort the merge:
+
+```bash
+git merge --abort
+```
+
+::conflict
+
+Now do a real one in the simulator:
+
+::lab conflict
+
+> [!TIP]
+> Conflicts are **normal**, not errors. They just mean two people changed the same lines. Small, frequent merges = smaller conflicts.
+</script>
+
+<script type="text/markdown" data-lesson="20" data-part="4" data-title="Rebase">
+Rebase moves your branch's commits on top of another branch.
+
+Instead of:
+
+```text
+      C → D
+     /
+A → B
+     \
+      E → F
+```
+
+Rebase can produce:
+
+```text
+A → B → E → F → C' → D'
+```
+
+Command:
+
+```bash
+git switch feature
+git rebase main
+```
+
+`C'` and `D'` are **new** commits (new hashes) with the same changes.
+
+# Merge vs Rebase
+
+| Merge | Rebase |
+| --- | --- |
+| Preserves branch history | Creates a cleaner linear history |
+| Creates merge commit when needed | Rewrites commit history |
+| Safer for shared branches | Best for local/unpublished work |
+| Easier for beginners | Requires more care |
+
+::history
+
+> [!DANGER]
+> **Golden rule:** Don't rebase commits that other people are already depending on unless your team explicitly knows how to handle it.
+
+::lab rebase
+</script>
+
+<script type="text/markdown" data-lesson="21" data-part="4" data-title="Squash Merge">
+Suppose your branch contains:
+
+```text
+commit 1
+commit 2
+commit 3
+commit 4
+```
+
+Instead of adding all four commits to `main`, squash them into one:
+
+```text
+Add complete navbar feature
+```
+
+This keeps `main` clean. GitHub Pull Requests can provide **Squash and merge**.
+
+Locally you can do the same with:
+
+```bash
+git switch main
+git merge --squash feature/navbar
+git commit -m "Add complete navbar feature"
+```
+
+::lab squash
+</script>
+
+<script type="text/markdown" data-lesson="22" data-part="4" data-title="Stashing">
+Suppose you're working on `feature/login`. You modified files but haven't committed. Now you need to switch branches.
+
+You can temporarily store your changes:
+
+```bash
+git stash
+```
+
+Your working directory becomes clean. Switch:
+
+```bash
+git switch main
+```
+
+Later:
+
+```bash
+git switch feature/login
+git stash pop
+```
+
+Your changes return.
+
+Useful commands:
+
+```bash
+git stash
+git stash list
+git stash pop
+git stash apply
+git stash drop
+git stash clear
+```
+
+# Difference
+
+| Command | Effect |
+| --- | --- |
+| `git stash pop` | Apply + remove stash |
+| `git stash apply` | Apply but keep stash |
+
+::lab stash
+
+::quiz 4
+</script>
+
+<!-- ================= PART 5 ================= -->
+<script type="text/markdown" data-lesson="23" data-part="5" data-title="GitHub">
+GitHub is a platform for hosting Git repositories.
+
+Typical flow:
+
+```text
+Local Repository
+       ↓
+     push
+       ↓
+GitHub Repository
+       ↓
+     pull
+       ↓
+Local Repository
+```
+
+Besides hosting code, GitHub provides Pull Requests, code review, Issues, Projects, Actions (CI/CD), Pages, Releases and more.
+
+> [!NOTE]
+> Alternatives exist (GitLab, Bitbucket, Gitea) — they all host **Git** repositories, so everything you learn about Git works on all of them.
+</script>
+
+<script type="text/markdown" data-lesson="24" data-part="5" data-title="Remote">
+A remote is a connection to another repository.
+
+See remotes:
+
+```bash
+git remote -v
+```
+
+Add remote:
+
+```bash
+git remote add origin <repository-url>
+```
+
+`origin` is simply the conventional name for the remote.
+
+```text
+origin  https://github.com/you/my-project.git (fetch)
+origin  https://github.com/you/my-project.git (push)
+```
+</script>
+
+<script type="text/markdown" data-lesson="25" data-part="5" data-title="Push">
+Upload commits:
+
+```bash
+git push
+```
+
+First time:
+
+```bash
+git push -u origin main
+```
+
+For a feature branch:
+
+```bash
+git push -u origin feature/navbar
+```
+
+After that, `git push` usually works on its own.
+
+> [!NOTE]
+> `-u` (`--set-upstream`) links your local branch to the remote branch, so later `git push`, `git pull` and `git status` know where to compare.
+
+> [!WARNING]
+> If someone else pushed first, your push is **rejected**. Run `git pull`, then push again. Avoid `git push --force` on shared branches.
+</script>
+
+<script type="text/markdown" data-lesson="26" data-part="5" data-title="Clone">
+Instead of creating a repository from scratch:
+
+```bash
+git clone <repository-url>
+```
+
+This downloads the repository including its Git history. Then:
+
+```bash
+cd project
+```
+
+Cloning automatically:
+
+* creates the folder
+* downloads all commits and branches
+* sets up the remote `origin`
+* checks out the default branch (`main`)
+</script>
+
+<script type="text/markdown" data-lesson="27" data-part="5" data-title="Pull">
+Get changes from GitHub and integrate them:
+
+```bash
+git pull
+```
+
+Conceptually:
+
+```text
+git fetch
++
+git merge
+```
+
+So `git pull` usually means:
+
+```bash
+git fetch
+git merge
+```
+
+> [!TIP]
+> Some teams prefer `git pull --rebase` to avoid extra merge commits when syncing.
+</script>
+
+<script type="text/markdown" data-lesson="28" data-part="5" data-title="Fetch">
+`fetch` downloads information from the remote but doesn't merge it into your current branch.
+
+```bash
+git fetch
+```
+
+This is safer when you want to inspect incoming changes first. Then:
+
+```bash
+git log --oneline --all
+```
+
+After fetching you'll see **remote-tracking branches** like `origin/main` (red labels in the simulator graph). They show where GitHub's branches were the last time you fetched.
+</script>
+
+<script type="text/markdown" data-lesson="29" data-part="5" data-title="Fetch vs Pull">
+| Command | What it does |
+| --- | --- |
+| `git fetch` | Download remote changes |
+| `git pull` | Fetch + integrate changes |
+| `git push` | Upload local commits |
+
+Think:
+
+```text
+GitHub → Local = fetch/pull
+Local → GitHub = push
+```
+
+Try the full cycle — connect a remote, push, then simulate a teammate pushing:
+
+::lab remote
+</script>
+
+<script type="text/markdown" data-lesson="30" data-part="5" data-title="GitHub Collaboration Workflow">
+For a team project:
+
+# Team leader
+
+Create repository (GitHub → New Repository), clone it locally:
+
+```bash
+git clone <repo-url>
+```
+
+Add collaborators.
+
+# Team members
+
+Clone:
+
+```bash
+git clone <repo-url>
+```
+
+Go inside:
+
+```bash
+cd project
+```
+
+Create personal feature branch:
+
+```bash
+git switch -c feature/navbar
+```
+
+Work (write code), then stage:
+
+```bash
+git add .
+```
+
+Commit:
+
+```bash
+git commit -m "Add responsive navbar"
+```
+
+Push:
+
+```bash
+git push -u origin feature/navbar
+```
+
+::flow collab
+</script>
+
+<script type="text/markdown" data-lesson="31" data-part="5" data-title="Pull Request">
+On GitHub:
+
+```text
+feature/navbar
+       ↓
+Pull Request
+       ↓
+Code Review
+       ↓
+Approve
+       ↓
+Merge
+       ↓
+main
+```
+
+A **Pull Request (PR)** allows teammates to review your work before merging it. This is one of the most important GitHub collaboration concepts.
+
+::flow pr
+
+# Writing a good PR
+
+* A clear title: *"Add responsive navbar"*
+* What & why in the description, with screenshots for UI changes
+* Link the issue: `Closes #24`
+* Keep it small — small PRs get reviewed faster
+
+::lab team
+</script>
+
+<script type="text/markdown" data-lesson="32" data-part="5" data-title="Better Team Workflow">
+Recommended structure:
+
+```text
+main
+ │
+ ├── feature/navbar
+ ├── feature/login
+ ├── feature/dashboard
+ └── fix/mobile-navbar
+```
+
+Each person works on their own branch.
+
+# Never directly work on main
+
+Instead:
+
+```bash
+git switch main
+git pull
+
+git switch -c feature/my-feature
+```
+
+Then:
+
+```bash
+git add .
+git commit -m "Implement my feature"
+git push -u origin feature/my-feature
+```
+
+Open Pull Request → Review → Merge.
+
+| Prefix | Use for |
+| --- | --- |
+| `feature/` | new functionality |
+| `fix/` | bug fixes |
+| `docs/` | documentation |
+| `refactor/` | code restructuring |
+
+> [!TIP]
+> On GitHub you can protect `main` (Settings → Branches) so nobody can push to it directly — every change must come through a reviewed PR.
+</script>
+
+<script type="text/markdown" data-lesson="33" data-part="5" data-title="Keep Your Branch Updated">
+Before starting work:
+
+```bash
+git switch main
+git pull
+```
+
+Then create your branch:
+
+```bash
+git switch -c feature/login
+```
+
+If your feature branch already exists:
+
+```bash
+git switch feature/login
+git fetch origin
+git merge origin/main
+```
+
+or, if your team uses rebase:
+
+```bash
+git rebase origin/main
+```
+
+::lab update
+</script>
+
+<script type="text/markdown" data-lesson="34" data-part="5" data-title="Fork">
+A **fork** creates your own GitHub copy of someone else's repository. Common in open-source projects:
+
+```text
+Original Repository
+        ↓
+       Fork
+        ↓
+Your GitHub Repository
+```
+
+Then:
+
+```text
+Fork
+ ↓
+Clone
+ ↓
+Create branch
+ ↓
+Code
+ ↓
+Push
+ ↓
+Pull Request → Original repository
+```
+
+::flow fork
+</script>
+
+<script type="text/markdown" data-lesson="35" data-part="5" data-title="origin vs upstream">
+Very important for open-source work.
+
+```text
+upstream → original project
+origin   → your fork
+```
+
+Example:
+
+```bash
+git remote -v
+```
+
+Could show:
+
+```text
+origin   https://github.com/emon/project.git
+upstream https://github.com/company/project.git
+```
+
+Keep your fork in sync:
+
+```bash
+git fetch upstream
+git switch main
+git merge upstream/main
+git push
+```
+
+::lab fork
+</script>
+
+<script type="text/markdown" data-lesson="36" data-part="5" data-title="Tags">
+Tags are useful for releases.
+
+```bash
+git tag v1.0.0
+```
+
+Push tag:
+
+```bash
+git push origin v1.0.0
+```
+
+Common:
+
+```text
+v1.0.0
+v1.1.0
+v2.0.0
+```
+
+> [!NOTE]
+> Version numbers usually follow **Semantic Versioning**: `MAJOR.MINOR.PATCH` — breaking change · new feature · bug fix.
+
+::lab tags
+
+::quiz 5
+</script>
+
+<!-- ================= PART 6 ================= -->
+<script type="text/markdown" data-lesson="37" data-part="6" data-title="Git Diff">
+See what changed:
+
+```bash
+git diff
+```
+
+See staged changes:
+
+```bash
+git diff --staged
+```
+
+Compare branches:
+
+```bash
+git diff main..feature/navbar
+```
+
+```diff
+-<h1>My Site</h1>
++<h1>My Awesome Site</h1>
+```
+
+Lines starting with `-` were removed, `+` were added.
+
+::lab diff
+</script>
+
+<script type="text/markdown" data-lesson="38" data-part="6" data-title="Git Show">
+See information about a commit:
+
+```bash
+git show <commit-hash>
+```
+
+Example:
+
+```bash
+git show a31f2c1
+```
+
+It shows the author, message and the diff that commit introduced. `git show HEAD` shows the latest commit.
+
+> [!TIP]
+> In every simulator on this site you can **click a commit circle** in the graph to run `git show` on it.
+</script>
+
+<script type="text/markdown" data-lesson="39" data-part="6" data-title="Cherry-Pick">
+Sometimes you need **one specific commit** from another branch.
+
+```bash
+git cherry-pick <commit-hash>
+```
+
+Example:
+
+```bash
+git cherry-pick a31f2c1
+```
+
+This is useful when you don't want to merge the entire branch — e.g. copying a hot-fix to a release branch.
+</script>
+
+<script type="text/markdown" data-lesson="40" data-part="6" data-title="Revert">
+If a commit has already been pushed/shared and you want to undo its effect, use:
+
+```bash
+git revert <commit-hash>
+```
+
+This creates a **new commit that reverses the old commit**. This is usually safer than resetting shared history.
+
+# Reset vs Revert
+
+```text
+reset
+→ moves history backward
+
+revert
+→ creates a new commit that undoes previous work
+```
+
+> [!IMPORTANT]
+> For public/shared branches: **prefer `git revert` over rewriting history.**
+
+::lab pick
+</script>
+
+<script type="text/markdown" data-lesson="41" data-part="6" data-title="Remote Branches">
+See local branches:
+
+```bash
+git branch
+```
+
+See remote branches:
+
+```bash
+git branch -r
+```
+
+See everything:
+
+```bash
+git branch -a
+```
+
+Start working on a branch a teammate pushed:
+
+```bash
+git fetch
+git switch feature/login
+```
+
+Git automatically creates a local `feature/login` that tracks `origin/feature/login`.
+</script>
+
+<script type="text/markdown" data-lesson="42" data-part="6" data-title="Delete Branch">
+Delete local branch:
+
+```bash
+git branch -d feature/navbar
+```
+
+Force delete:
+
+```bash
+git branch -D feature/navbar
+```
+
+Delete remote branch:
+
+```bash
+git push origin --delete feature/navbar
+```
+
+> [!NOTE]
+> `-d` refuses to delete a branch whose work isn't merged yet — a safety net. `-D` deletes anyway.
+</script>
+
+<script type="text/markdown" data-lesson="43" data-part="6" data-title="Rename Branch">
+Rename current branch:
+
+```bash
+git branch -M main
+```
+
+Common when setting up a repository:
+
+```bash
+git branch -M main
+```
+
+Rename any branch:
+
+```bash
+git branch -m old-name new-name
+```
+
+::lab branches
+</script>
+
+<script type="text/markdown" data-lesson="44" data-part="6" data-title="Git Configuration">
+Set your identity:
+
+```bash
+git config --global user.name "Your Name"
+```
+
+```bash
+git config --global user.email "you@example.com"
+```
+
+Check:
+
+```bash
+git config --global --list
+```
+
+Other handy settings:
+
+```bash
+git config --global init.defaultBranch main
+git config --global core.editor "code --wait"
+```
+
+> [!TIP]
+> Use the same email as your GitHub account so your commits are linked to your profile.
+</script>
+
+<script type="text/markdown" data-lesson="45" data-part="6" data-title="GitHub Authentication">
+There are two common approaches:
+
+# HTTPS
+
+```bash
+git clone https://github.com/user/repo.git
+```
+
+GitHub no longer accepts your account password over HTTPS — use a **Personal Access Token** or a credential manager (Git for Windows includes one).
+
+# SSH
+
+```bash
+git clone git@github.com:user/repo.git
+```
+
+SSH is convenient for frequent GitHub use because you authenticate using your SSH key rather than repeatedly entering credentials.
+
+```bash
+ssh-keygen -t ed25519 -C "you@example.com"
+```
+
+Add the **public** key (`~/.ssh/id_ed25519.pub`) to GitHub → Settings → SSH and GPG keys. Test:
+
+```bash
+ssh -T git@github.com
+```
+
+::lab config
+</script>
+
+<script type="text/markdown" data-lesson="46" data-part="6" data-title=".git vs .gitignore">
+Don't confuse `.git/` with `.gitignore`.
+
+| `.git/` | `.gitignore` |
+| --- | --- |
+| A **folder** | A **file** |
+| Git's internal repository database (commits, branches, config) | Rules telling Git which untracked files/directories to ignore |
+| Created by `git init` | Created by you |
+| Never edit or commit it manually | Should be committed and shared with the team |
+
+::quiz 6
+</script>
+
+<!-- ================= PART 7 ================= -->
+<script type="text/markdown" data-lesson="47" data-part="7" data-title="GitHub Issues">
+GitHub isn't only for storing code. Issues can be used for:
+
+```text
+🐛 Bug
+✨ Feature
+📚 Documentation
+🔧 Improvement
+```
+
+Example:
+
+```text
+Issue #24
+Fix mobile navbar
+```
+
+A developer creates:
+
+```bash
+git switch -c fix/mobile-navbar
+```
+
+Then solves it and opens a PR. Writing `Closes #24` in the PR description closes the issue automatically when the PR is merged.
+
+::flow issue
+</script>
+
+<script type="text/markdown" data-lesson="48" data-part="7" data-title="GitHub Projects">
+Projects can organize work using columns:
+
+```text
+Todo
+In Progress
+Review
+Done
+```
+
+This is useful for team software projects.
+
+::kanban
+</script>
+
+<script type="text/markdown" data-lesson="49" data-part="7" data-title="GitHub Actions">
+GitHub Actions provides CI/CD automation.
+
+```text
+Push code
+   ↓
+GitHub Actions
+   ↓
+Run tests
+   ↓
+Run lint
+   ↓
+Build project
+   ↓
+Deploy
+```
+
+::flow actions
+
+A workflow lives in `.github/workflows/ci.yml`:
+
+```yaml
+name: CI
+on: [push, pull_request]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - run: npm run lint
+      - run: npm test
+      - run: npm run build
+```
+
+> [!TIP]
+> Combine Actions with branch protection so a PR can only be merged when all checks are green ✅.
+</script>
+
+<script type="text/markdown" data-lesson="50" data-part="7" data-title=".gitkeep">
+Git doesn't track empty directories. Suppose `data/` is empty — Git won't normally store the empty folder.
+
+You can add:
+
+```text
+data/.gitkeep
+```
+
+Now Git tracks the directory because it contains a file.
+
+> [!NOTE]
+> `.gitkeep` isn't a special Git command or official Git feature. It's simply a common **convention** — any file name would work.
+
+::lab gitkeep
+</script>
+
+<script type="text/markdown" data-lesson="51" data-part="7" data-title=".gitignore for Python">
+```gitignore
+__pycache__/
+*.pyc
+
+.venv/
+venv/
+
+.env
+
+.ipynb_checkpoints/
+
+*.log
+
+.DS_Store
+```
+
+::ignore python
+</script>
+
+<script type="text/markdown" data-lesson="52" data-part="7" data-title=".gitignore for Node.js">
+```gitignore
+node_modules/
+dist/
+.next/
+
+.env
+.env.local
+
+*.log
+```
+
+::ignore node
+
+> [!TIP]
+> GitHub offers ready-made templates when you create a repository ("Add .gitignore"), and [github.com/github/gitignore](https://github.com/github/gitignore) has templates for almost every language.
+
+::quiz 7
+</script>
+
+<!-- ================= PART 8 ================= -->
+<script type="text/markdown" data-lesson="53" data-part="8" data-title="Important Git Mental Model">
+Remember this:
+
+```text
+             Git Repository
+                  ↑
+               commit
+                  ↑
+            Staging Area
+                  ↑
+                add
+                  ↑
+           Working Directory
+```
+
+And GitHub:
+
+```text
+        GitHub Remote Repository
+                  ↑
+                push
+                  ↑
+          Local Git Repository
+                  ↑
+              commit
+                  ↑
+             staging
+                  ↑
+          working directory
+```
+
+::flow model
+</script>
+
+<script type="text/markdown" data-lesson="54" data-part="8" data-title="The Most Important Commands">
+| Goal | Command |
+| --- | --- |
+| Start | `git init` |
+| Check status | `git status` |
+| Stage | `git add .` |
+| Commit | `git commit -m "message"` |
+| History | `git log --oneline --graph --all` |
+| Branch | `git branch` · `git switch -c feature/name` · `git switch main` |
+| Merge | `git switch main` → `git merge feature/name` |
+| Remote | `git remote -v` |
+| Clone | `git clone <url>` |
+| Download changes | `git pull` |
+| Upload changes | `git push` |
+| Temporarily save work | `git stash` · `git stash pop` |
+| Undo | `git restore file` · `git restore --staged file` · `git revert <commit>` · `git reset` |
+
+> [!TIP]
+> Open the **[📜 Cheat Sheet](#/cheatsheet)** for a searchable list, or drill them with **[🃏 Flashcards](#/flashcards)**.
+</script>
+
+<script type="text/markdown" data-lesson="55" data-part="8" data-title="Complete Real-World Workflow">
+For a team project, memorize this workflow:
+
+```text
+                 GitHub
+                    ↑
+                  push
+                    │
+              Feature Branch
+                    │
+              ┌─────┴─────┐
+              │   Coding  │
+              └─────┬─────┘
+                    ↓
+                git add .
+                    ↓
+             git commit -m
+                    ↓
+                git push
+                    ↓
+             Pull Request
+                    ↓
+              Code Review
+                    ↓
+                 Merge
+                    ↓
+                  main
+```
+
+# Developer
+
+```bash
+git clone <repo-url>
+
+cd project
+
+git switch -c feature/navbar
+
+# code...
+
+git status
+
+git add .
+
+git commit -m "Add responsive navbar"
+
+git push -u origin feature/navbar
+```
+
+# Reviewer/Merger
+
+On GitHub: Review PR → Request changes / Approve → Merge. Then locally:
+
+```bash
+git switch main
+git pull
+```
+
+::lab capstone
+</script>
+
+<script type="text/markdown" data-lesson="56" data-part="8" data-title="The Golden Rules of Git">
+# Rule 1 — Commit small logical changes
+
+Bad: `Update everything` · Better: `Add authentication`, `Fix login validation`, `Add responsive navbar`
+
+# Rule 2 — Don't work directly on main in a team project
+
+Use feature branches.
+
+# Rule 3 — Pull/fetch before starting new work
+
+```bash
+git switch main
+git pull
+```
+
+# Rule 4 — Never commit secrets
+
+Don't commit `.env`, API keys, passwords or private credentials.
+
+# Rule 5 — Don't blindly use git reset --hard
+
+It can permanently discard local work.
+
+# Rule 6 — Use revert for shared/public history
+
+```bash
+git revert <commit>
+```
+
+# Rule 7 — A commit is not the same thing as a backup
+
+A commit saves history locally. Push it to GitHub if you need the remote copy.
+
+::quiz 8
+</script>
+
+<script type="text/markdown" data-lesson="57" data-part="8" data-title="Corrections & Common Misconceptions">
+# "When Git gets permission, it only knows what's in the files"
+
+Original note:
+
+> "when git ke permission deoya hoi tokhon sudhu git jane oi file a ki ki ache."
+
+Better:
+
+> [!IMPORTANT]
+> **`git init` tells Git to create a repository in the folder. After that, Git can observe the files, but files remain untracked until we add them. Once added/committed, Git can track their history.**
+
+# "U - untracked, A - added/staged, C - committed"
+
+Git status codes don't work exactly like that. `git status -s` commonly shows:
+
+```text
+??  → untracked
+ M  → modified
+M   → staged
+A   → added/staged
+```
+
+A **commit isn't normally shown as `C`** in `git status -s` — once committed, the working tree is clean for that file, so it simply doesn't appear.
+
+# More misconceptions
+
+| Myth | Reality |
+| --- | --- |
+| "Git and GitHub are the same" | Git is the tool; GitHub is a hosting service |
+| "Committing uploads my code" | Commits are local until you `git push` |
+| "`.gitignore` removes committed files" | It only affects untracked files — use `git rm --cached` |
+| "Deleting a branch deletes its commits on main" | Merged commits stay; the branch is just a pointer |
+| "Merge conflicts mean I broke something" | They're normal; you just choose the right lines |
+
+🎉 **You've reached the end of the notes!** Practise in the [💻 Playground](#/playground) and test yourself in the [🎓 Final Exam](#/exam).
+</script>
+
+<!-- ================= PART 1 quiz is appended to lesson 2 by placing it here ================= -->
+
+<script src="js/markdown.js"></script>
+<script src="js/sim.js"></script>
+<script src="js/data.js"></script>
+<script src="js/simui.js"></script>
+<script src="js/widgets.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
